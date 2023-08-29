@@ -55,7 +55,7 @@ public class UGameManager : MonoBehaviour
 		isPause = true;
 		needToKick = false;
 		table.Clear();
-		table.board = new Board();
+		table.board = new Board(table.startBoard);
 		menu.back.SetActive(true);
 	}
 
@@ -103,13 +103,9 @@ public class UGameManager : MonoBehaviour
 				{
 					botTakenPos = botVisualMove.taken[botStepMove] + table.transform.position;
 					botTackenChecker = botTackenCheckers[botStepMove];
-					
-					Debug.Log("botTakenPos: " + botTakenPos);
-					Debug.Log("botTackenChecker: " + botTackenChecker.position);
 				}
 	
 				botTargetPos = botVisualMove.pos[++botStepMove] + table.transform.position;
-				Debug.Log("botStepMove: " + botStepMove);
 			}
 			else
 			{
@@ -124,7 +120,6 @@ public class UGameManager : MonoBehaviour
 		// player visual of checkers move
 		if (playerVisualChecker != null && playerVisualChecker.checkerControll != null)
 		{
-			Debug.Log(playerVisualChecker.checkerControll);
 			if (playerTackenChecker != null && (Mathf.Abs((playerVisualChecker.checkerControll.transform.position - playerTakenPos).magnitude) < 0.1f))
 			{
 				if (playerTackenChecker.checkerControll != null)
@@ -206,6 +201,12 @@ public class UGameManager : MonoBehaviour
 	{
 		Debug.Log("BotThinkMoveAsync: ");
 		botVisualMove = Board.MiniMax(table.board, bot.botHard * 2, bot == botWhite).Item2;
+		if(botVisualMove == null)
+		{
+			if (step % 2 == 1) WinBlack?.Invoke();
+			else WinWhite?.Invoke();
+			return;
+		}
 		botVisualChecker = table.board[botVisualMove.pos[0].y, botVisualMove.pos[0].x];
 		botStepMove = 0;
 		botTargetPos = botVisualMove.pos[botStepMove+1] + table.transform.position;

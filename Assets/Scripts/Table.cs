@@ -6,13 +6,35 @@ public class Table : MonoBehaviour
 {
 	public Board board;
 	public GameObject whiteChecker, blackChecker;
+	//public int[,] startBoard =
+	//{
+	//	{ 1, 0, 1, 0, 0, 0, 0, 0},
+	//	{ 0, 0, 0, 0, 0, 0, 0, 0},
+	//	{ 0, 0, 0, 0, 0, 0, 0, 0},
+	//	{ 0, 1, 0, 1, 0, 1, 0, 0},
+	//	{ 1, 0, 1, 0, 1, 0, 0, 0},
+	//	{ 0, 0, 0, 0, 0, 0, 0, 0},
+	//	{ 2, 0, 0, 0, 0, 0, 0, 0},
+	//	{ 0, 0, 0, 0, 0, 0, 0, 0},
+	//};
 
+	public int[,] startBoard =
+	{
+		{ 1, 0, 1, 0, 1, 0, 1, 0},	//	(0, 0) ...... (7, 0)
+		{ 0, 1, 0, 1, 0, 1, 0, 1},	//	.
+		{ 1, 0, 1, 0, 1, 0, 1, 0},	//	.
+		{ 0, 0, 0, 0, 0, 0, 0, 0},	//	.
+		{ 0, 0, 0, 0, 0, 0, 0, 0},	//	.
+		{ 0, 2, 0, 2, 0, 2, 0, 2},	//	.
+		{ 2, 0, 2, 0, 2, 0, 2, 0},	//	.
+		{ 0, 2, 0, 2, 0, 2, 0, 2},	//	(0, 7)
+	};
 	private void Start()
 	{
 	}
 	public void CreatBoard()
 	{
-		board = new Board();
+		board = new Board(startBoard);
 		foreach (Checker c in board.whiteCheckers)
 		{
 			c.ChangeQueen += SetQueen;
@@ -70,7 +92,7 @@ public class Board
 	public bool isWhiteMove, isEndGame;
 	public List<Checker> whiteCheckers = new List<Checker>(), blackCheckers = new List<Checker>();
 
-	public Board()
+	public Board(int [,] intBoard)
 	{
 		whiteCheckers = new List<Checker>();
 		blackCheckers = new List<Checker>();
@@ -78,12 +100,12 @@ public class Board
 		{
 			for (int x = y % 2; x < 8; x += 2)
 			{
-				if(y < 3)
+				if(intBoard[y, x] == 1)
 				{
 					_board[y, x] = new Checker(new Vector3Int(x, y), true, false);
 					whiteCheckers.Add(_board[y, x]);
 				}
-				else if (y > 4)
+				else if (intBoard[y, x] == 2)
 				{
 					_board[y, x] = new Checker(new Vector3Int(x, y), false, false);
 					blackCheckers.Add(_board[y, x]);
